@@ -1,0 +1,8 @@
+[caps]
+platformName = "ANDROID"
+platform = "android"
+deviceName = "android"
+newCommandTimeout = "9999"
+app = "./app-debug.apk"
+url = "http://localhost:4723/wd/hub"
+appPackage = "com.amazonaws.devicefarm.android.referenceapp"
