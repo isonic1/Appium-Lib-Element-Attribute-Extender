@@ -5,8 +5,8 @@ Reason
 ------
 I needed a better way to identify the elements on a page and easily obtain a webdriver object to control. By extending the attributes and placing these values into an array of hashes I could then easily filter the results based on their attributes to return the elements I wanted and return the objects to use. I also wanted to replicate what the [uiautomatorviewer](https://developer.android.com/training/testing/ui-automator) provided within my framework. 
 
-Prerequisites
--------------
+Prerequisites For this Example
+------------------------------
 * [Android SDK Installed](https://developer.android.com/studio/)
 * [Appium Installed](https://www.npmjs.com/package/appium)
 * [Install Appium Console - ARC](https://github.com/appium/ruby_console)
