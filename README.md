@@ -31,19 +31,34 @@ Usage Example
 ```ruby
 require_relative 'page_elements_extender.rb'
 
-view = AndroidParser.new
+do_not_include = [ 
+                   "android:id/content", 
+                   "android:id/navigationBarBackground", 
+                   "android:id/content",
+                   "android:id/parentPanel", 
+                   "android:id/topPanel", 
+                   "android:id/title_template",
+                   "android:id/contentPanel", 
+                   "android:id/scrollView", 
+                   "android:id/buttonPanel",
+                   "android:id/statusBarBackground"
+                 ] #this array of locators is optional...
 
-page_elements = view.elements
+view = AndroidParser.new(do_not_include)
 
-clickable = page_elements.find_all { |e| e if e[:clickable] and e[:enabled] } #this returns an array of clickable/visible elements
+elements = view.page_objects
+
+clickable = elements.find_all { |e| e if e[:clickable] and e[:enabled] } #this returns an array of clickable/visible elements
 
 element = clickable.sample #picks random array value
 
 locator = element[:accessibilty_label] || element[:id] #use accessibility label first and then id if available
 
 if locator.nil?
+  puts "My Class: #{element[:class]}"
   wd_object = driver.find_element({xpath: "//#{element[:class]}[@bounds='#{element[:bounds]}']"}) #Use class and bounds as last resort...
 else
+  puts "My Locator: #{locator}"
   wd_object = driver.find_element({id: locator})
 end
 
@@ -51,9 +66,3 @@ wd_object.click
 ```
 * This is an example of how you can get only the elements which are clickable and enabled, ignoring everything else.
 * You can now use this to build your own crawler and iterate through the clickable array elements.
-
-
-
-
-      
-      

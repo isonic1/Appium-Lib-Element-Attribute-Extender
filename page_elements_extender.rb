@@ -1,9 +1,13 @@
 class AndroidParser
-
+  
+  def initialize exclude = []
+    $do_not_include = exclude || []
+  end
+  
   class Appium::Android::AndroidElements
-
+    
     def reset
-      @result   = []
+      @result = []
     end
 
     def start_element(name, attrs = [], driver = driver)
@@ -11,24 +15,10 @@ class AndroidParser
 
       attributes = {}
       
-      #add or remove the locator id's here
-      do_not_include = [ 
-                         "android:id/content", 
-                         "android:id/navigationBarBackground", 
-                         "android:id/content",
-                         "android:id/parentPanel", 
-                         "android:id/topPanel", 
-                         "android:id/title_template",
-                         "android:id/contentPanel", 
-                         "android:id/scrollView", 
-                         "android:id/buttonPanel",
-                         "android:id/statusBarBackground"
-                       ]
-
       attrs.each do |key, value|
-
-        #do not include these locators
-        next if do_not_include.include? value
+        
+        #do not include this values
+        next if $do_not_include.include? value
 
         if key.include? "-"
           key = key.gsub("-","_")
@@ -39,9 +29,9 @@ class AndroidParser
         elsif key == "content_desc"
           key = "accessibilty_label"
         end
-
-        if ["android:id/button2", "android:id/button1"].include? value
-          attributes["dialog"] = true
+          
+        if ["android:id/button2", "android:id/button1", "android:id/message", "android:id/alertTitle"].include? value
+          attributes.merge!({"dialog" => "true"})
         end
 
         if value.empty?
@@ -57,11 +47,10 @@ class AndroidParser
         attributes[key] = value
       end
 
-      eval_attrs = ["checkable", "checked", "clickable", "enabled", "focusable", "focused",
-                    "scrollable", "long_clickable", "password", "selected", "instance", "index"]
+      eval_attrs = ["true", "false"]
 
       @result << attributes.reduce({}) do |memo, (k, v)|
-        if eval_attrs.include? k.to_s
+        if eval_attrs.include? v.to_s
           v = eval(v) rescue false
         end
         memo.merge({ k.to_sym => v })
@@ -69,16 +58,17 @@ class AndroidParser
     end
   end
 
-  def elements(opts = {})
+  def page_objects(opts = {})
     class_name = opts.is_a?(Hash) ? opts.fetch(:class, nil) : opts
     results = get_android_inspect class_name
     results.map { |h| results.delete(h) if h.values.uniq == [nil] }
     results
   end
 
-  def print_page
-    page.each do |result|
+  def print_page_objects
+    page_objects.each do |result|
       puts "\n#{result}\n"
+      puts ""
     end
   end
 end
