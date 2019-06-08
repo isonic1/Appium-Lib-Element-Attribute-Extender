@@ -31,6 +31,8 @@ Usage Example
 ```ruby
 require_relative 'page_elements_extender.rb'
 
+* Ability to exclude certain locators. Most of these can be excluded using the ignoreUnimportantViews = true capability.
+
 do_not_include = [ 
                    "android:id/content", 
                    "android:id/navigationBarBackground", 
